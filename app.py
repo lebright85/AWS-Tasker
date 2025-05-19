@@ -7,9 +7,10 @@ import bcrypt
 from functools import wraps
 import secrets
 import string
+import os
 
-app = Flask(__name__)
-app.secret_key = '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d'
+app = Flask(__name__, static_folder='static')
+app.secret_key = os.getenv('SECRET_KEY', '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d')
 
 def init_db():
     conn = sqlite3.connect('database.db')
@@ -288,7 +289,6 @@ def reset_password(id):
         conn.close()
         return redirect(url_for('manage_users'))
     
-    # Generate random 12-character password
     characters = string.ascii_letters + string.digits + string.punctuation
     new_password = ''.join(secrets.choice(characters) for _ in range(12))
     hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
@@ -331,11 +331,8 @@ def dashboard():
             task_id = int(task[0])
             if task_id > 0:
                 assign_job_tasks.append((task_id, task[1]))
-            else:
-                print(f"Skipping invalid candidate ID: {task[0]} (non-positive)")
         except (ValueError, TypeError):
-            print(f"Skipping invalid candidate ID: {task[0]} (non-integer)")
-    print("Assign Job Tasks (Filtered):", assign_job_tasks)
+            pass
     c.execute("SELECT id, name FROM candidates WHERE status = 'Job Assigned'")
     call_to_start_job_tasks = c.fetchall()
     c.execute("SELECT COUNT(*) FROM candidates WHERE created_at >= ?", (seven_days_ago,))
@@ -1031,6 +1028,11 @@ def assign_job(id):
     conn.close()
     return render_template('assign_job.html', candidate_id=id, jobs=jobs)
 
+# Initialize database on startup
+init_db()
+
+# No app.run() in production; Gunicorn handles serving
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    port = int(os.getenv('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
