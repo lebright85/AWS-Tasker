@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h1>
+    
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Total Candidates</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ total_candidates }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Awaiting Interview</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ awaiting_interview }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Interview Scheduled</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ interview_scheduled }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Awaiting Job</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ awaiting_job }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Job Assigned</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ job_assigned }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Total Job Listings</h2>
+            <p class="text-2xl font-bold text-indigo-600">{{ total_jobs }}</p>
+        </div>
+    </div>
+    
+    <!-- Today's Interviews -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Today's Interviews</h2>
+        {% if todays_interviews %}
+        <ul class="divide-y divide-gray-200">
+            {% for interview in todays_interviews %}
+            <li class="py-2 flex justify-between items-center">
+                <span>{{ interview[1] }} at {{ interview[2] }}</span>
+                <a href="{{ url_for('candidate_profile', id=interview[0]) }}" class="ml-4 text-indigo-600 hover:text-indigo-800">View Details</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-gray-600">No interviews scheduled for {{ today }}.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Weekly Task Reminders -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Weekly Task Reminders</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Call for Interview -->
+            <div>
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Call for Interview</h3>
+                {% if schedule_interview_tasks %}
+                <ul class="divide-y divide-gray-200">
+                    {% for task in schedule_interview_tasks %}
+                    <li class="py-2 flex justify-between items-center">
+                        <span>{{ task[1] }} needs an interview.</span>
+                        <a href="{{ url_for('schedule_interview', id=task[0]) }}" class="ml-4 text-indigo-600 hover:text-indigo-800">Schedule</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-gray-600">No candidates awaiting interview.</p>
+                {% endif %}
+            </div>
+            <!-- Assign Job -->
+            <div>
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Assign Job</h3>
+                {% if assign_job_tasks %}
+                <ul class="divide-y divide-gray-200">
+                    {% for task in assign_job_tasks %}
+                    {% if task[0] and task[0] is number and task[0] > 0 %}
+                    <li class="py-2 flex justify-between items-center">
+                        <span>{{ task[1] }} needs a job assignment.</span>
+                        <a href="{{ url_for('assign_job', id=task[0]) }}" class="ml-4 text-indigo-600 hover:text-indigo-800">Assign Job</a>
+                    </li>
+                    {% else %}
+                    <li class="py-2 text-gray-600">Invalid candidate ID skipped.</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-gray-600">No candidates awaiting job assignment.</p>
+                {% endif %}
+            </div>
+            <!-- Call to Start Job -->
+            <div>
+                <h3 class="text-md font-semibold text-gray-700 mb-2">Call to Start Job</h3>
+                {% if call_to_start_job_tasks %}
+                <ul class="divide-y divide-gray-200">
+                    {% for task in call_to_start_job_tasks %}
+                    <li class="py-2">
+                        <span>{{ task[1] }} needs a job start call.</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-gray-600">No candidates need a job start call.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weekly Report -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Weekly Report</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-indigo-600">{{ new_candidates }}</p>
+                <p class="text-sm text-gray-600">New Candidates Registered</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-indigo-600">{{ interviews_completed }}</p>
+                <p class="text-sm text-gray-600">Interviews Completed</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl font-bold text-indigo-600">{{ assigned_jobs }}</p>
+                <p class="text-sm text-gray-600">Jobs Assigned</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

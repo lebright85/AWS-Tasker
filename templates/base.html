@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>{% block title %}{% endblock %}</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+      <nav class="bg-indigo-600 text-white p-4">
+          <div class="max-w-7xl mx-auto flex justify-between items-center">
+              <div class="text-xl font-semibold">AWS Job Placement</div>
+              <div class="flex space-x-4">
+                  <a href="{{ url_for('dashboard') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'dashboard' %}bg-indigo-700{% endif %}">Dashboard</a>
+                  <a href="{{ url_for('candidate_list') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'candidate_list' %}bg-indigo-700{% endif %}">Candidates</a>
+                  <a href="{{ url_for('job_list') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'job_list' %}bg-indigo-700{% endif %}">Jobs</a>
+                  <a href="{{ url_for('interview_scheduled') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'interview_scheduled' %}bg-indigo-700{% endif %}">Interviews</a>
+                  <a href="{{ url_for('reports') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'reports' %}bg-indigo-700{% endif %}">Reports</a>
+                  {% if g.is_admin %}
+                  <a href="{{ url_for('manage_users') }}" class="hover:bg-indigo-700 px-3 py-2 rounded-md {% if request.endpoint == 'manage_users' %}bg-indigo-700{% endif %}">Manage Users</a>
+                  {% endif %}
+                  {% if g.user_name %}
+                  <div class="relative">
+                      <button class="hover:bg-indigo-700 px-3 py-2 rounded-md flex items-center">
+                          {{ g.user_name }}
+                          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                      <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-10">
+                          <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                          <a href="{{ url_for('settings') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                          <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                      </div>
+                  </div>
+                  {% endif %}
+              </div>
+          </div>
+      </nav>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <div class="mb-4">
+              {% for category, message in messages %}
+              <div class="p-4 rounded-md {% if category == 'success' %}bg-green-100 text-green-800{% elif category == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                  {{ message }}
+              </div>
+              {% endfor %}
+          </div>
+          {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+      </div>
+      <script>
+          document.querySelectorAll('button + div').forEach(dropdown => {
+              dropdown.previousElementSibling.addEventListener('click', () => {
+                  dropdown.classList.toggle('hidden');
+              });
+          });
+      </script>
+  </body>
+  </html>

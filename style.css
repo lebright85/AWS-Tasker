@@ -1,0 +1,47 @@
+/* Custom styles for Job Placement App */
+
+/* Flash messages */
+.flash-messages {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* Ensure navbar dropdowns are properly z-indexed */
+nav .group > div {
+    z-index: 10;
+}
+
+/* Mobile menu transitions */
+#mobile-menu {
+    transition: max-height 0.3s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+}
+#mobile-menu:not(.hidden) {
+    max-height: 500px;
+}
+
+/* Table responsiveness */
+table {
+    min-width: 100%;
+}
+
+/* Custom hover effects for buttons */
+a.bg-indigo-600:hover, button.bg-indigo-600:hover {
+    background-color: #4f46e5;
+}
+
+/* Ensure consistent font sizes for headings */
+h1, h2 {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Minimal custom styles for Tailwind overrides */
+.job-actions-menu {
+    display: none;
+}
+.job-actions-button:focus + .job-actions-menu,
+.job-actions-menu:hover {
+    display: block;
+}

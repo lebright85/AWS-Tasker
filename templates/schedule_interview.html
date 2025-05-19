@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Schedule New Interview{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-4">Schedule New Interview</h1>
+    <p class="text-gray-600 mb-6">Assign an interview slot to a candidate.</p>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-medium text-gray-800 mb-4">Interview Details</h2>
+        <p class="text-sm text-gray-500 mb-6">Select a candidate and an available slot.</p>
+        
+        <form method="POST" action="{{ url_for('schedule_interview') }}">
+            <!-- Candidate -->
+            <div class="mb-4">
+                <label for="candidate_id" class="block text-sm font-medium text-gray-700">Candidate</label>
+                <select name="candidate_id" id="candidate_id" required aria-required="true"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="" disabled selected>Select a candidate</option>
+                    {% for candidate in candidates %}
+                        <option value="{{ candidate[0] }}">{{ candidate[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Slot -->
+            <div class="mb-4">
+                <label for="slot_id" class="block text-sm font-medium text-gray-700">Available Slot</label>
+                <select name="slot_id" id="slot_id" required aria-required="true"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="" disabled selected>Select a slot</option>
+                    {% for slot in slots %}
+                        <option value="{{ slot[0] }}">{{ slot[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex space-x-4">
+                <a href="{{ url_for('interviews') }}"
+                   class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                    Schedule Interview
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

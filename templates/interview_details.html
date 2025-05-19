@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Interview Details{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Interview Details</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Interview for {{ interview[1] }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p><strong>Candidate ID:</strong> {{ interview[0] }}</p>
+                <p><strong>Candidate Name:</strong> <a href="{{ url_for('candidate_profile', id=interview[0]) }}" class="text-indigo-600 hover:text-indigo-800">{{ interview[1] }}</a></p>
+                <p><strong>Email:</strong> {{ interview[2] or 'N/A' }}</p>
+                <p><strong>Status:</strong> {{ interview[4] }}</p>
+            </div>
+            <div>
+                <p><strong>Interview Date & Time:</strong> {{ interview[3] or 'N/A' }}</p>
+                <p><strong>Job Type:</strong> {{ interview[5] or 'N/A' }}</p>
+                <p><strong>Company:</strong> {{ interview[6] or 'N/A' }}</p>
+                <p><strong>Location:</strong> {{ interview[7] or 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="{{ url_for('interview_scheduled') }}" class="text-indigo-600 hover:text-indigo-800">Back to Scheduled Interviews</a>
+    </div>
+</div>
+{% endblock %}

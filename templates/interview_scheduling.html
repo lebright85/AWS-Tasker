@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Interview Scheduling{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-4">Interview Scheduling</h1>
+    <p class="text-gray-600 mb-6">Manage interview schedules and track progress.</p>
+    
+    <div class="flex space-x-4 mb-6">
+        <a href="{{ url_for('batch_create_slots') }}"
+           class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+            Batch Create Slots
+        </a>
+        <a href="{{ url_for('schedule_interview') }}"
+           class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+            Schedule New Interview
+        </a>
+    </div>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-lg font-medium text-gray-800 mb-4">Interview Calendar</h2>
+        <p class="text-sm text-gray-500 mb-4">Select a date to view interviews for that day.</p>
+        <div class="mb-4">
+            <h3 class="text-base font-semibold text-gray-800">May 2025</h3>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center">
+            <div class="text-sm font-medium text-gray-500">Su</div>
+            <div class="text-sm font-medium text-gray-500">Mo</div>
+            <div class="text-sm font-medium text-gray-500">Tu</div>
+            <div class="text-sm font-medium text-gray-500">We</div>
+            <div class="text-sm font-medium text-gray-500">Th</div>
+            <div class="text-sm font-medium text-gray-500">Fr</div>
+            <div class="text-sm font-medium text-gray-500">Sa</div>
+            {% for day in [27, 28, 29, 30] %}
+                <div class="text-sm text-gray-400">{{ day }}</div>
+            {% endfor %}
+            {% for day in range(1, 32) %}
+                {% set date_str = '2025-05-' ~ '%02d' % day %}
+                <a href="{{ url_for('interview_scheduling', date=date_str) }}"
+                   class="text-sm py-2 rounded-md {{ 'bg-indigo-100 text-indigo-800' if date_str == selected_date else 'hover:bg-gray-100' }}">
+                    {{ day }}
+                </a>
+            {% endfor %}
+            {% for day in [1, 2] %}
+                <div class="text-sm text-gray-400">{{ day }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-medium text-gray-800 mb-4">Interviews for {{ selected_date | strftime('%B %dth, %Y') }}</h2>
+        {% if interviews %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidate</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for interview in interviews %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ interview[1] }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ interview[2] | strftime('%I:%M %p') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ interview[3] or 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <a href="{{ url_for('mark_awaiting_job', id=interview[0]) }}"
+                                       class="text-indigo-600 hover:text-indigo-800">Mark Awaiting Job</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-sm text-gray-500 mb-2">No interviews scheduled for this day.</p>
+            <p class="text-sm text-gray-500">Try selecting another date or Click <a href="{{ url_for('schedule_interview') }}" class="text-indigo-600 hover:text-indigo-800">"Schedule New Interview"</a> to add one or <a href="{{ url_for('batch_create_slots') }}" class="text-indigo-600 hover:text-indigo-800">"Batch Create Slots"</a>.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Assign Job{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Assign Job</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <form method="POST">
+            <div class="mb-4">
+                <label for="job_id" class="block text-sm font-medium text-gray-700">Select Job</label>
+                <select id="job_id" name="job_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    {% for job in jobs %}
+                    <option value="{{ job[0] }}">{{ job[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <a href="{{ url_for('awaiting_job') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Cancel</a>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Assign Job</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

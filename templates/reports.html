@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2">Reports</h1>
+    <p class="text-sm text-gray-600 mb-6">Generate reports for candidates, jobs, or interviews.</p>
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Filter Reports</h2>
+        <form method="POST" action="{{ url_for('reports') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label for="report_type" class="block text-sm font-medium text-gray-700">Report Type</label>
+                    <select id="report_type" name="report_type" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                        <option value="candidate" {% if report_type == 'candidate' %}selected{% endif %}>Candidate</option>
+                        <option value="jobs" {% if report_type == 'jobs' %}selected{% endif %}>Jobs</option>
+                        <option value="interview" {% if report_type == 'interview' %}selected{% endif %}>Interview</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select id="status" name="status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="All">All</option>
+                        {% for status_option in statuses %}
+                        <option value="{{ status_option }}" {% if status == status_option %}selected{% endif %}>{{ status_option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="date_start" class="block text-sm font-medium text-gray-700">Date Start</label>
+                    <input type="date" id="date_start" name="date_start" value="{{ date_start or '' }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="date_end" class="block text-sm font-medium text-gray-700">Date End</label>
+                    <input type="date" id="date_end" name="date_end" value="{{ date_end or '' }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="submit" name="filter" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Filter</button>
+                <button type="submit" name="export_csv" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Export to CSV</button>
+            </div>
+        </form>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ report_type | capitalize }} Report</h2>
+        {% if results %}
+        <div class="overflow-x-auto">
+            {% if report_type == 'candidate' %}
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="bg-indigo-600 text-white">
+                        <th class="px-4 py-2">Candidate ID</th>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Interview Date</th>
+                        <th class="px-4 py-2">Job Type</th>
+                        <th class="px-4 py-2">Company</th>
+                        <th class="px-4 py-2">Job Start Date</th>
+                        <th class="px-4 py-2">Job End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ row[0] }}</td>
+                        <td class="px-4 py-2">{{ row[1] }}</td>
+                        <td class="px-4 py-2">{{ row[2] }}</td>
+                        <td class="px-4 py-2">{{ row[3] or 'N/A' }}</td>
+                        <td class="px-4 py-2">{{ row[4] or 'None' }}</td>
+                        <td class="px-4 py-2">{{ row[5] or 'None' }}</td>
+                        <td class="px-4 py-2">{{ row[6] or 'None' }}</td>
+                        <td class="px-4 py-2">{{ row[7] or 'None' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% elif report_type == 'jobs' %}
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="bg-indigo-600 text-white">
+                        <th class="px-4 py-2">Job ID</th>
+                        <th class="px-4 py-2">Type</th>
+                        <th class="px-4 py-2">Company</th>
+                        <th class="px-4 py-2">Address</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Start Date</th>
+                        <th class="px-4 py-2">End Date</th>
+                        <th class="px-4 py-2">Hiring Number</th>
+                        <th class="px-4 py-2">Assigned Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ row[0] }}</td>
+                        <td class="px-4 py-2">{{ row[1] }}</td>
+                        <td class="px-4 py-2">{{ row[2] }}</td>
+                        <td class="px-4 py-2">{{ row[3] }}</td>
+                        <td class="px-4 py-2">{{ row[4] }}</td>
+                        <td class="px-4 py-2">{{ row[5] or 'N/A' }}</td>
+                        <td class="px-4 py-2">{{ row[6] or 'N/A' }}</td>
+                        <td class="px-4 py-2">{{ row[7] or 'N/A' }}</td>
+                        <td class="px-4 py-2">{{ row[8] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% elif report_type == 'interview' %}
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="bg-indigo-600 text-white">
+                        <th class="px-4 py-2">Slot ID</th>
+                        <th class="px-4 py-2">Datetime</th>
+                        <th class="px-4 py-2">Notes</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Assigned Candidate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ row[0] }}</td>
+                        <td class="px-4 py-2">{{ row[1] }}</td>
+                        <td class="px-4 py-2">{{ row[2] or 'N/A' }}</td>
+                        <td class="px-4 py-2">{{ row[3] }}</td>
+                        <td class="px-4 py-2">{{ row[4] or 'None' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        {% else %}
+        <p class="text-gray-600">No results found for the selected filters.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

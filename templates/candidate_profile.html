@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Candidate Profile{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2">Candidate Profile</h1>
+    <p class="text-sm text-gray-600 mb-6">View and update candidate details for {{ candidate[1] }}.</p>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Candidate Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+                <p class="text-sm text-gray-600">Name</p>
+                <p class="text-gray-800">{{ candidate[1] }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Email</p>
+                <p class="text-gray-800">{{ candidate[2] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Phone</p>
+                <p class="text-gray-800">{{ candidate[2] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Status</p>
+                <p class="text-gray-800">{{ candidate[9] }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Job Type</p>
+                <p class="text-gray-800">{{ candidate[16] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Company</p>
+                <p class="text-gray-800">{{ candidate[17] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Interview Date & Time</p>
+                <p class="text-gray-800">{{ candidate[10] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Address</p>
+                <p class="text-gray-800">{{ candidate[4] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Languages</p>
+                <p class="text-gray-800">{{ candidate[5] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Skills</p>
+                <p class="text-gray-800">{{ candidate[6] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Preferred Shift</p>
+                <p class="text-gray-800">{{ candidate[7] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Driver's License</p>
+                <p class="text-gray-800">{{ candidate[12] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Work Permit</p>
+                <p class="text-gray-800">{{ candidate[13] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Work Experience</p>
+                <p class="text-gray-800">{{ candidate[14] or 'N/A' }}</p>
+            </div>
+        </div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Comments</h2>
+        <form method="POST" action="{{ url_for('candidate_profile', id=candidate[0]) }}">
+            <div class="mb-4">
+                <label for="comments" class="block text-sm font-medium text-gray-700">Comments</label>
+                <textarea id="comments" name="comments" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" rows="4">{{ candidate[8] or '' }}</textarea>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <a href="{{ url_for('candidate_list') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Back to List</a>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Update Comments</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Register</h2>
+    <form method="POST">
+        <div class="mb-4">
+            <label for="full_name" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+        </div>
+        <div class="mb-4">
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+        </div>
+        <div class="mb-6">
+            <label for="credentials" class="block text-sm font-medium text-gray-700">Credentials</label>
+            <select id="credentials" name="credentials" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                <option value="Admin">Admin</option>
+                <option value="Staff">Staff</option>
+            </select>
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Register</button>
+    </form>
+    <p class="mt-4 text-center text-sm text-gray-600">
+        Already have an account? <a href="{{ url_for('login') }}" class="text-indigo-600 hover:text-indigo-800">Login</a>
+    </p>
+</div>
+{% endblock %}

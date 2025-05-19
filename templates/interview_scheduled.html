@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+    {% block title %}Scheduled Interviews{% endblock %}
+    {% block content %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-2">Scheduled Interviews</h1>
+        <p class="text-sm text-gray-600 mb-6">View and manage scheduled interviews for candidates.</p>
+        <div class="mb-6 flex flex-wrap gap-4">
+            <a href="{{ url_for('candidate_list') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Schedule New Interview</a>
+            {% if is_admin %}
+            <button id="add-slot-button" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Add New Interview Slot</button>
+            {% endif %}
+        </div>
+
+        {% if is_admin %}
+        <div id="add-slot-form" class="bg-white p-6 rounded-lg shadow-md mb-8 hidden">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Add New Interview Slot</h2>
+            <form method="POST" action="{{ url_for('add_interview_slot') }}">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    </div>
+                    <div>
+                        <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+                        <input type="time" id="time" name="time" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="notes" class="block text-sm font-medium text-gray-700">Notes (Optional)</label>
+                    <textarea id="notes" name="notes" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" rows="4"></textarea>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-slot-button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Add Slot</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Scheduled Interviews</h2>
+            <p class="text-sm text-gray-600 mb-4">Showing {{ candidates|length }} interview(s).</p>
+            {% if candidates %}
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-indigo-600 text-white">
+                            <th class="px-4 py-2">Candidate Name</th>
+                            <th class="px-4 py-2">Job Type</th>
+                            <th class="px-4 py-2">Company</th>
+                            <th class="px-4 py-2">Location</th>
+                            <th class="px-4 py-2">Interview Date & Time</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidate in candidates %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-2">
+                                <a href="{{ url_for('candidate_profile', id=candidate[0]) }}" class="text-indigo-600 hover:text-indigo-800">{{ candidate[1] }}</a>
+                            </td>
+                            <td class="px-4 py-2">{{ candidate[5] or 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ candidate[6] or 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ candidate[7] or 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ candidate[3] or 'N/A' }}</td>
+                            <td class="px-4 py-2">
+                                <div class="flex gap-2">
+                                    <a href="{{ url_for('complete_interview', id=candidate[0]) }}" class="text-indigo-600 hover:text-indigo-800" title="Mark as Completed">
+                                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ url_for('cancel_interview', id=candidate[0]) }}" class="text-indigo-600 hover:text-indigo-800" title="Cancel Interview">
+                                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ url_for('reschedule_interview', id=candidate[0]) }}" class="text-indigo-600 hover:text-indigo-800" title="Reschedule Interview">
+                                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ url_for('delete_candidate', id=candidate[0]) }}" class="text-red-600 hover:text-red-800" title="Delete Candidate" onclick="return confirm('Are you sure you want to delete this candidate?')">
+                                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1zm-7 4h18"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-gray-600">No candidates with scheduled interviews.</p>
+            {% endif %}
+        </div>
+        {% if candidate_id %}
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Schedule Interview for {{ candidate_name }}</h2>
+            <form method="POST" action="{{ url_for('schedule_interview', id=candidate_id) }}">
+                <div class="mb-4">
+                    <label for="slot_id" class="block text-sm font-medium text-gray-700">Select Interview Slot</label>
+                    <select id="slot_id" name="slot_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                        {% for slot in slots %}
+                        <option value="{{ slot[0] }}">{{ slot[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <a href="{{ url_for('candidate_list') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">Cancel</a>
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Schedule</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        document.getElementById('add-slot-button')?.addEventListener('click', () => {
+            const form = document.getElementById('add-slot-form');
+            form.classList.toggle('hidden');
+        });
+        document.getElementById('cancel-slot-button')?.addEventListener('click', () => {
+            document.getElementById('add-slot-form').classList.add('hidden');
+        });
+    </script>
+    {% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Job Details{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Job Details</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ job[1] }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p><strong>ID:</strong> {{ job[0] }}</p>
+                <p><strong>Company:</strong> {{ job[2] or 'N/A' }}</p>
+                <p><strong>Location:</strong> {{ job[3] or 'N/A' }}</p>
+                <p><strong>Shift:</strong> {{ job[4] or 'N/A' }}</p>
+                <p><strong>Requirements:</strong> {{ job[5] or 'N/A' }}</p>
+            </div>
+            <div>
+                <p><strong>Status:</strong> {{ job[9] }}</p>
+                <p><strong>Hiring Limit:</strong> {{ job[11] }} / {% if job[10] %}{{ job[10] }}{% else %}Unlimited{% endif %}</p>
+                <p><strong>Duration:</strong> {{ job[6] or 'N/A' }}</p>
+                <p><strong>Start Date:</strong> {{ job[7] or 'N/A' }}</p>
+                <p><strong>End Date:</strong> {{ job[8] or 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <a href="{{ url_for('job_list') }}" class="text-indigo-600 hover:text-indigo-800">Back to Job Management</a>
+    </div>
+</div>
+{% endblock %}
